@@ -1,0 +1,20 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"/><title>Loans</title></head>
+<body>
+<h1>Danh sách phiếu mượn</h1>
+<a href="/books">Trở về</a>
+<hr/>
+<table border="1" cellpadding="6">
+    <tr><th>ID</th><th>Book</th><th>Reader</th><th>Loan</th><th>Due</th><th>Return</th></tr>
+    <tr th:each="l : ${loans}">
+        <td th:text="${l.id}"></td>
+        <td th:text="${l.bookId}"></td>
+        <td th:text="${l.readerId}"></td>
+        <td th:text="${l.loanDate}"></td>
+        <td th:text="${l.dueDate}"></td>
+        <td th:text="${l.returnDate}"></td>
+    </tr>
+</table>
+</body>
+</html>

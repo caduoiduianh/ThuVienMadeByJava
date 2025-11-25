@@ -16,7 +16,7 @@ public class App {
     public static void main(String[] args) {
         LibraryService svc = new LibraryService();
 
-        // Đăng nhập đơn giản: admin có thêm chức năng thống kê
+        // Admin mode
         boolean isAdmin = loginAsAdmin();
 
         while (true) {
@@ -86,7 +86,7 @@ public class App {
         }
     }
 
-    // Đăng nhập admin đơn giản (user = admin, pass = admin123)
+    // Login admin (user = admin, pass = admin123)
     private static boolean loginAsAdmin() {
         System.out.println("===== ĐĂNG NHẬP =====");
         System.out.print("Nhập tên đăng nhập (admin để vào chế độ Admin, Enter để bỏ qua): ");
@@ -196,7 +196,7 @@ public class App {
         }
     }
 
-    // 6. Tìm kiếm sách theo tên
+    // 6. Search from name book
     private static void searchBookByTitleUI(LibraryService svc) throws SQLException {
         System.out.print("Nhập từ khóa tên sách: ");
         String keyword = sc.nextLine().trim();
@@ -211,7 +211,7 @@ public class App {
         }
     }
 
-    // 7. Tìm kiếm sách theo tác giả
+    // 7. Search from author
     private static void searchBookByAuthorUI(LibraryService svc) throws SQLException {
         System.out.print("Nhập tên tác giả: ");
         String keyword = sc.nextLine().trim();

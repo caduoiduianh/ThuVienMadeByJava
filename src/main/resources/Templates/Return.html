@@ -1,0 +1,15 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"/><title>Return</title></head>
+<body>
+<h1>Trả sách</h1>
+<a href="/books">Trở về</a>
+<div th:if="${message}" style="color:green" th:text="${message}"></div>
+<div th:if="${error}" style="color:red" th:text="${error}"></div>
+
+<form method="post" action="/return">
+    <label>Loan ID: <input type="text" name="loanId" /></label><br/>
+    <button type="submit">Trả</button>
+</form>
+</body>
+</html>
