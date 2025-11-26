@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả mượn sách</title>
+</head>
+<body>
+<h1>Kết quả mượn sách</h1>
+
+<div th:if="${success}">
+    <p>Mượn sách thành công! Thông tin phiếu mượn:</p>
+    <ul>
+        <li th:text="'Mã phiếu: ' + ${loan.id}"></li>
+        <li th:text="'Mã sách: ' + ${loan.bookId}"></li>
+        <li th:text="'Mã độc giả: ' + ${loan.readerId}"></li>
+        <li th:text="'Ngày mượn: ' + ${loan.loanDate}"></li>
+        <li th:text="'Hạn trả: ' + ${loan.dueDate}"></li>
+    </ul>
+    <p>Admin có thể xem lại trong trang <a href="/loans">Danh sách phiếu mượn</a>.</p>
+</div>
+
+<div th:if="${!success}">
+    <p th:text="'Không thể mượn sách: ' + ${error}"></p>
+</div>
+
+<a href="/borrow">Mượn tiếp</a> | <a href="/">Về trang chủ</a>
+</body>
+</html>

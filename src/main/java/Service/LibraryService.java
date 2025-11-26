@@ -1,8 +1,8 @@
 package Service;
 
 import DataAccessObject.BookObject;
-import DataAccessObject.ReaderObject;
 import DataAccessObject.LoanObject;
+import DataAccessObject.ReaderObject;
 import ModelLibrary.Book;
 import ModelLibrary.Loan;
 import ModelLibrary.Reader;
@@ -19,6 +19,7 @@ public class LibraryService {
     private final LoanObject loanDAO;
 
     public static final int DEFAULT_LOAN_DAYS = 14;
+    public static final int DEFAULT_MAX_LOANS = 3;
 
     public LibraryService() {
         this.bookDAO = new BookObject();
@@ -26,7 +27,7 @@ public class LibraryService {
         this.loanDAO = new LoanObject();
     }
 
-    // Book
+    // ===== BOOK =====
 
     public List<Book> getAllBooks() throws SQLException {
         return bookDAO.findAll();
@@ -56,7 +57,7 @@ public class LibraryService {
         return bookDAO.searchByAuthor(keyword);
     }
 
-    //Reader
+    // ===== READER =====
 
     public List<Reader> getAllReaders() throws SQLException {
         return readerDAO.findAll();
@@ -78,7 +79,12 @@ public class LibraryService {
         return readerDAO.delete(id);
     }
 
-    // Loan
+    // Tìm reader theo tên + phone (phục vụ web UI)
+    public Reader findReaderByNamePhone(String name, String phone) throws SQLException {
+        return readerDAO.findByNameAndPhone(name, phone);
+    }
+
+    // ===== LOAN (mượn / trả theo ID như console app cũ) =====
 
     public Loan borrowLoan(String loanId, String bookId, String readerId) throws SQLException {
 
@@ -92,36 +98,30 @@ public class LibraryService {
             throw new IllegalArgumentException("Không tìm thấy độc giả: " + readerId);
         }
 
-        //Check book
         if (book.getAvailableCopies() <= 0) {
             throw new IllegalStateException("Sách đã hết, không thể mượn!");
         }
 
-        //Check reader limit
         int activeLoans = readerDAO.countActiveLoans(readerId);
         if (activeLoans >= reader.getMaxLoans()) {
             throw new IllegalStateException(
                     "Độc giả đã mượn tối đa " + reader.getMaxLoans() + " cuốn, không thể mượn thêm.");
         }
 
-        //Create loan
         LocalDate today = LocalDate.now();
         LocalDate due = today.plusDays(DEFAULT_LOAN_DAYS);
         Loan loan = new Loan(loanId, bookId, readerId, today, due, null);
 
-        //Update DB: decrease the available, then insert loan
         try {
             if (!bookDAO.decrementAvailable(bookId)) {
                 throw new IllegalStateException("Không thể trừ số lượng sách (có thể đã hết).");
             }
 
             if (!loanDAO.insert(loan)) {
-                // If insert loan fail -> Refund book
                 bookDAO.incrementAvailable(bookId);
                 throw new IllegalStateException("Không thể tạo phiếu mượn sách!");
             }
         } catch (SQLException e) {
-            // SQL error -> Return back book then take the error
             bookDAO.incrementAvailable(bookId);
             throw e;
         }
@@ -131,17 +131,12 @@ public class LibraryService {
 
     public boolean returnBook(String loanId) throws SQLException {
         Loan loan = loanDAO.findById(loanId);
-        if (loan == null) {
-            return false; // cannot find loan
-        }
-        if (loan.getReturnDate() != null) {
-            return false; // already returned
-        }
+        if (loan == null) return false;
+        if (loan.getReturnDate() != null) return false;
 
         LocalDate today = LocalDate.now();
         boolean updated = loanDAO.markReturned(loanId, today);
         if (updated) {
-            // increase back
             bookDAO.incrementAvailable(loan.getBookId());
         }
         return updated;
@@ -163,9 +158,9 @@ public class LibraryService {
         return loanDAO.findOverdue(LocalDate.now());
     }
 
-    // Statical
+    // ===== THỐNG KÊ SIMPLE =====
 
-    // Book can loan (available > 0)
+    // Sách còn có thể mượn (available > 0)
     public List<Book> getAvailableBooks() throws SQLException {
         List<Book> all = bookDAO.findAll();
         List<Book> out = new ArrayList<>();
@@ -177,7 +172,7 @@ public class LibraryService {
         return out;
     }
 
-    // Book is now loaning (available < total)
+    // Sách đang được mượn (available < total)
     public List<Book> getBorrowedBooks() throws SQLException {
         List<Book> all = bookDAO.findAll();
         List<Book> out = new ArrayList<>();
@@ -187,5 +182,76 @@ public class LibraryService {
             }
         }
         return out;
+    }
+
+    // ===== HỖ TRỢ WEB: tạo ID + tìm/ tạo Reader + chọn sách từ query =====
+
+    // Rxxx, dựa trên ID reader hiện có trong DB
+    private String genReaderId() throws SQLException {
+        int max = 0;
+        for (Reader r : readerDAO.findAll()) {
+            String id = r.getId();
+            if (id != null && id.startsWith("R")) {
+                try {
+                    int n = Integer.parseInt(id.substring(1));
+                    if (n > max) max = n;
+                } catch (NumberFormatException ignore) {
+                }
+            }
+        }
+        return String.format("R%03d", max + 1);
+    }
+
+    // Lxxxxxxxxxx – đơn giản dùng timestamp
+    private String genLoanId() {
+        return "L" + System.currentTimeMillis();
+    }
+
+    // Tìm reader theo (name, phone); nếu chưa có thì tạo mới
+    private Reader findOrCreateReader(String name, String phone) throws SQLException {
+        Reader r = readerDAO.findByNameAndPhone(name, phone);
+        if (r != null) return r;
+
+        String newId = genReaderId();
+
+        // NOTE: nếu class Reader của mày KHÔNG có field phone,
+        // thì đổi constructor lại cho đúng (vd: new Reader(newId, name, DEFAULT_MAX_LOANS))
+        r = new Reader(newId, name, phone, DEFAULT_MAX_LOANS);
+        readerDAO.insert(r);
+        return r;
+    }
+
+    // Tìm 1 cuốn sách từ query (ID / title / author)
+    private Book resolveBookFromQuery(String query) throws SQLException {
+        if (query == null || query.isBlank()) {
+            throw new IllegalArgumentException("Vui lòng nhập thông tin sách.");
+        }
+
+        // 1. thử theo ID
+        Book byId = bookDAO.findById(query);
+        if (byId != null) return byId;
+
+        // 2. thử theo title
+        List<Book> byTitle = bookDAO.searchByTitle(query);
+        if (!byTitle.isEmpty()) {
+            // nếu muốn chặt hơn thì kiểm tra size >1 và báo lỗi
+            return byTitle.get(0);
+        }
+
+        // 3. thử theo author
+        List<Book> byAuthor = bookDAO.searchByAuthor(query);
+        if (!byAuthor.isEmpty()) {
+            return byAuthor.get(0);
+        }
+
+        throw new IllegalArgumentException("Không tìm thấy sách phù hợp với: " + query);
+    }
+
+    // API cho Web: người dùng nhập tên + phone + query sách
+    public Loan borrowFromWeb(String readerName, String phone, String bookQuery) throws SQLException {
+        Reader reader = findOrCreateReader(readerName, phone);
+        Book book = resolveBookFromQuery(bookQuery);
+        String loanId = genLoanId();
+        return borrowLoan(loanId, book.getId(), reader.getId());
     }
 }

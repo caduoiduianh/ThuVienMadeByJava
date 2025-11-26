@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trả sách</title>
+</head>
+<body>
+<h1>Người dùng trả sách</h1>
+
+<p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+<form action="/return" method="post">
+    <p>
+        Tên người mượn: <br>
+        <input type="text" name="name" required>
+    </p>
+    <p>
+        Số điện thoại: <br>
+        <input type="text" name="phone" required>
+    </p>
+
+    <button type="submit">Tìm phiếu mượn</button>
+</form>
+
+<a href="/">Về trang chủ</a>
+</body>
+</html>

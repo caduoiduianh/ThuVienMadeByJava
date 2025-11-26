@@ -1,0 +1,84 @@
+.dash-root {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #1d4ed8 0, #020617 55%, #000 100%);
+  color: #e5e7eb;
+}
+
+.dash-header {
+  padding: 16px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(16px);
+  background: linear-gradient(to right, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
+  border-bottom: 1px solid rgba(148,163,184,0.3);
+}
+
+.dash-header h1 {
+  font-size: 22px;
+}
+
+.user-info {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.btn-outline {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #9ca3af;
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.btn-outline:hover {
+  background: rgba(148,163,184,0.2);
+  transform: translateY(-1px);
+}
+
+.dash-main {
+  padding: 28px 40px 40px;
+}
+
+.dash-section + .dash-section {
+  margin-top: 24px;
+}
+
+.dash-section h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-btn {
+  min-width: 180px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.4);
+  background: rgba(15,23,42,0.9);
+  color: #e5e7eb;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s;
+}
+
+.card-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.75);
+  border-color: #3b82f6;
+}
+
+.card-admin {
+  background: radial-gradient(circle at top left, #1d4ed8, #0f172a);
+}

@@ -1,12 +1,21 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"/><title>Loans</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách phiếu mượn</title>
+</head>
 <body>
 <h1>Danh sách phiếu mượn</h1>
-<a href="/books">Trở về</a>
-<hr/>
-<table border="1" cellpadding="6">
-    <tr><th>ID</th><th>Book</th><th>Reader</th><th>Loan</th><th>Due</th><th>Return</th></tr>
+
+<table border="1" cellpadding="4">
+    <tr>
+        <th>ID phiếu</th>
+        <th>ID sách</th>
+        <th>ID độc giả</th>
+        <th>Ngày mượn</th>
+        <th>Hạn trả</th>
+        <th>Ngày trả</th>
+    </tr>
     <tr th:each="l : ${loans}">
         <td th:text="${l.id}"></td>
         <td th:text="${l.bookId}"></td>
@@ -16,5 +25,7 @@
         <td th:text="${l.returnDate}"></td>
     </tr>
 </table>
+
+<a href="/">Về trang chủ</a>
 </body>
 </html>

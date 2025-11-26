@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mượn sách</title>
+</head>
+<body>
+<h1>Mượn sách</h1>
+
+<form th:action="@{/borrow}" th:object="${loanForm}" method="post">
+    <p>
+        Họ tên người mượn:
+        <input type="text" th:field="*{readerName}" required>
+    </p>
+    <p>
+        Số điện thoại:
+        <input type="text" th:field="*{phone}" required>
+    </p>
+    <p>
+        Sách muốn mượn (mã / tên / tác giả):
+        <input type="text" th:field="*{bookQuery}" required>
+    </p>
+    <button type="submit">Mượn sách</button>
+</form>
+
+<div th:if="${success}">
+    <h3>Mượn thành công</h3>
+    <p th:text="${loan}"></p>
+</div>
+
+<div th:if="${success == false}">
+    <h3>Không thể mượn</h3>
+    <p th:text="${error}"></p>
+</div>
+
+<p><a href="/">Về trang chủ</a></p>
+</body>
+</html>
