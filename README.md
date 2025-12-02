@@ -152,15 +152,6 @@ http://localhost:5173
 
 ---
 
-## 9. Tác giả
-
-- Sinh viên: ...
-- MSSV: ...
-- Môn học: ...
-- GVHD: ...
-
----
-
 ✅ **Project hoàn chỉnh, dữ liệu đồng bộ giữa Admin – User – Database.**
 
 ---
@@ -503,13 +494,5 @@ sequenceDiagram
 
 ---
 
-## 9. Author
-
-- Student: *(fill your name)*  
-- Student ID: *(fill your ID)*  
-- Course: *(fill course name)*  
-- Instructor: *(fill instructor name)*  
-
----
 
 ✅ The project provides a complete, working **full-stack library management system** with synchronized data between **Admin**, **User**, and the **database**, and can be extended easily for real-world use.
