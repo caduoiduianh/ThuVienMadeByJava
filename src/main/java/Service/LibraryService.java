@@ -214,8 +214,7 @@ public class LibraryService {
 
         String newId = genReaderId();
 
-        // NOTE: nếu class Reader của mày KHÔNG có field phone,
-        // thì đổi constructor lại cho đúng (vd: new Reader(newId, name, DEFAULT_MAX_LOANS))
+        // nếu class Reader của mày không có field phone thì đổi lại constructor cho đúng
         r = new Reader(newId, name, phone, DEFAULT_MAX_LOANS);
         readerDAO.insert(r);
         return r;
@@ -234,7 +233,6 @@ public class LibraryService {
         // 2. thử theo title
         List<Book> byTitle = bookDAO.searchByTitle(query);
         if (!byTitle.isEmpty()) {
-            // nếu muốn chặt hơn thì kiểm tra size >1 và báo lỗi
             return byTitle.get(0);
         }
 

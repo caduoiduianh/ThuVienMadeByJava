@@ -9,14 +9,22 @@ import java.util.List;
 
 public class BookObject {
 
+    // Map 1 hàng từ ResultSet -> Book (đọc luôn category + isbn)
     private Book map(ResultSet rs) throws SQLException {
-        return new Book(
-                rs.getString("id"),
-                rs.getString("title"),
-                rs.getString("author"),
-                rs.getInt("total_copies"),
-                rs.getInt("available_copies")
-        );
+        Book b = new Book();
+
+        b.setId(rs.getString("id"));
+        b.setTitle(rs.getString("title"));
+        b.setAuthor(rs.getString("author"));
+
+        // 👇 2 cột mới trong DB
+        b.setCategory(rs.getString("category"));
+        b.setIsbn(rs.getString("isbn"));
+
+        b.setTotalCopies(rs.getInt("total_copies"));
+        b.setAvailableCopies(rs.getInt("available_copies"));
+
+        return b;
     }
 
     // Lấy tất cả sách
@@ -49,30 +57,45 @@ public class BookObject {
 
     // Thêm sách
     public boolean insert(Book b) throws SQLException {
-        String sql = "INSERT INTO books(id,title,author,total_copies,available_copies) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO books(" +
+                "id, title, author, category, isbn, total_copies, available_copies" +
+                ") VALUES(?,?,?,?,?,?,?)";
         try (Connection cn = Database.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
 
             ps.setString(1, b.getId());
             ps.setString(2, b.getTitle());
             ps.setString(3, b.getAuthor());
-            ps.setInt(4, b.getTotalCopies());
-            ps.setInt(5, b.getAvailableCopies());
+            ps.setString(4, b.getCategory());
+            ps.setString(5, b.getIsbn());
+            ps.setInt(6, b.getTotalCopies());
+            ps.setInt(7, b.getAvailableCopies());
+
             return ps.executeUpdate() == 1;
         }
     }
 
     // Cập nhật sách
     public boolean update(Book b) throws SQLException {
-        String sql = "UPDATE books SET title=?, author=?, total_copies=?, available_copies=? WHERE id=?";
+        String sql = "UPDATE books SET " +
+                "title = ?, " +
+                "author = ?, " +
+                "category = ?, " +
+                "isbn = ?, " +
+                "total_copies = ?, " +
+                "available_copies = ? " +
+                "WHERE id = ?";
         try (Connection cn = Database.getConnection();
              PreparedStatement ps = cn.prepareStatement(sql)) {
 
             ps.setString(1, b.getTitle());
             ps.setString(2, b.getAuthor());
-            ps.setInt(3, b.getTotalCopies());
-            ps.setInt(4, b.getAvailableCopies());
-            ps.setString(5, b.getId());
+            ps.setString(3, b.getCategory());
+            ps.setString(4, b.getIsbn());
+            ps.setInt(5, b.getTotalCopies());
+            ps.setInt(6, b.getAvailableCopies());
+            ps.setString(7, b.getId());
+
             return ps.executeUpdate() == 1;
         }
     }

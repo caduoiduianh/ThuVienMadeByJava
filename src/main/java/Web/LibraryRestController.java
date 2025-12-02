@@ -1,114 +1,85 @@
 package Web;
 
-import ModelLibrary.Book;
-import ModelLibrary.Loan;
-import ModelLibrary.Reader;
 import Service.LibraryService;
+import ModelLibrary.Loan;
+import ModelLibrary.Book;
+import Web.dto.BorrowRequest;
+import Web.dto.ReturnRequest;
+import ModelLibrary.Reader;
+
+
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:5173") // cho phép React gọi
+@CrossOrigin(origins = "*")
 public class LibraryRestController {
 
-    private final LibraryService svc = new LibraryService();
+    private final LibraryService libraryService = new LibraryService();
 
-    // ===== BOOKS =====
-
+    // ===== BOOK =====
     @GetMapping("/books")
     public List<Book> getBooks() throws SQLException {
-        return svc.getAllBooks();
+        return libraryService.getAllBooks();
+    }
+    // ===== BOOK CRUD cho trang admin =====
+
+    @PostMapping("/books")
+    public Book createBook(@RequestBody Book book) throws SQLException {
+        // Nếu availableCopies chưa set thì mặc định = totalCopies
+        if (book.getAvailableCopies() == 0) {
+            book.setAvailableCopies(book.getTotalCopies());
+        }
+        libraryService.addBook(book);
+        return book;
     }
 
-    // ===== LOANS =====
+    @PutMapping("/books/{id}")
+    public Book updateBook(@PathVariable String id, @RequestBody Book book) throws SQLException {
+        book.setId(id);
+        libraryService.updateBook(book);
+        return book;
+    }
 
+    @DeleteMapping("/books/{id}")
+    public boolean deleteBook(@PathVariable String id) throws SQLException {
+        return libraryService.deleteBook(id);
+    }
+
+
+    // ===== READERS =====
+    @GetMapping("/readers")
+    public List<Reader> getReaders() throws SQLException {
+        return libraryService.getAllReaders();
+    }
+
+    // ===== LOAN =====
     @GetMapping("/loans")
     public List<Loan> getLoans() throws SQLException {
-        return svc.getAllLoans();
+        return libraryService.getAllLoans();
     }
 
     @GetMapping("/loans/overdue")
-    public List<Loan> getOverdueLoans() throws SQLException {
-        return svc.getOverdueLoans();
+    public List<Loan> getOverdue() throws SQLException {
+        return libraryService.getOverdueLoans();
     }
 
-    // ===== READERS (cho admin nếu cần) =====
-
-    @GetMapping("/readers")
-    public List<Reader> getReaders() throws SQLException {
-        return svc.getAllReaders();
+    // ===== BORROW =====
+    @PostMapping("/borrow")
+    public Loan borrow(@RequestBody BorrowRequest req) throws SQLException {
+        return libraryService.borrowFromWeb(
+                req.getName(),
+                req.getPhone(),
+                req.getBookQuery()
+        );
     }
 
-    // ===== USER: MƯỢN SÁCH TỪ WEB =====
-
-    public static class BorrowWebRequest {
-        private String readerName;
-        private String phone;
-        private String bookQuery;
-
-        public String getReaderName() {
-            return readerName;
-        }
-        public void setReaderName(String readerName) {
-            this.readerName = readerName;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-
-        public String getBookQuery() {
-            return bookQuery;
-        }
-        public void setBookQuery(String bookQuery) {
-            this.bookQuery = bookQuery;
-        }
-    }
-
-    @PostMapping("/borrow-web")
-    public Loan borrowFromWeb(@RequestBody BorrowWebRequest req) throws SQLException {
-        if (req.getReaderName() == null || req.getReaderName().isBlank()) {
-            throw new IllegalArgumentException("Vui lòng nhập tên người mượn.");
-        }
-        if (req.getPhone() == null || req.getPhone().isBlank()) {
-            throw new IllegalArgumentException("Vui lòng nhập số điện thoại.");
-        }
-        if (req.getBookQuery() == null || req.getBookQuery().isBlank()) {
-            throw new IllegalArgumentException("Vui lòng nhập thông tin sách.");
-        }
-
-        // dùng hàm borrowFromWeb đã viết trong LibraryService
-        return svc.borrowFromWeb(req.getReaderName(), req.getPhone(), req.getBookQuery());
-    }
-
-    // ===== USER: TRẢ SÁCH TỪ WEB (đơn giản theo loanId trước) =====
-
-    public static class ReturnWebRequest {
-        private String loanId;
-
-        public String getLoanId() {
-            return loanId;
-        }
-        public void setLoanId(String loanId) {
-            this.loanId = loanId;
-        }
-    }
-
-    @PostMapping("/return-web")
-    public Map<String, Object> returnFromWeb(@RequestBody ReturnWebRequest req) throws SQLException {
-        boolean ok = svc.returnBook(req.getLoanId());
-        Map<String, Object> res = new HashMap<>();
-        res.put("success", ok);
-        res.put("timestamp", LocalDate.now().toString());
-        return res;
+    // ===== RETURN =====
+    @PostMapping("/return")
+    public boolean returnBook(@RequestBody ReturnRequest req) throws SQLException {
+        return libraryService.returnBook(req.getLoanId());
     }
 }
