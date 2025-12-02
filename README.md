@@ -152,6 +152,15 @@ http://localhost:5173
 
 ---
 
+## 9. Tác giả
+
+- Sinh viên: ...
+- MSSV: ...
+- Môn học: ...
+- GVHD: ...
+
+---
+
 ✅ **Project hoàn chỉnh, dữ liệu đồng bộ giữa Admin – User – Database.**
 
 ---
@@ -494,5 +503,62 @@ sequenceDiagram
 
 ---
 
+## 9. Author
+
+- Student: *(fill your name)*  
+- Student ID: *(fill your ID)*  
+- Course: *(fill course name)*  
+- Instructor: *(fill instructor name)*  
+
+---
 
 ✅ The project provides a complete, working **full-stack library management system** with synchronized data between **Admin**, **User**, and the **database**, and can be extended easily for real-world use.
+
+---
+
+## 📥 Download Source Code (Quick Start)
+
+### Option 1: Clone directly from GitHub (Recommended)
+
+Make sure **Git** is installed on your computer, then run:
+
+```bash
+git clone https://github.com/<your-username>/<your-repo-name>.git
+cd <your-repo-name>
+```
+
+Replace:
+- `<your-username>` with your GitHub username
+- `<your-repo-name>` with the repository name
+
+This will download **both frontend & backend** with full configuration.
+
+---
+
+### Option 2: Download ZIP (No Git required)
+
+1. Open the GitHub repository
+2. Click **Code → Download ZIP**
+3. Extract the ZIP file
+4. Open the extracted folder in **VS Code / IntelliJ**
+
+---
+
+## 📦 Project Structure Overview
+
+```text
+DeTaiCuoiKi/
+├── backend/              # Java Spring Boot backend
+│   ├── src/main/java/
+│   ├── pom.xml
+│   └── mvnw, mvnw.cmd
+├── frontend/             # React + TypeScript frontend
+│   ├── src/
+│   ├── package.json
+│   └── vite.config.ts
+├── database/             # MySQL scripts (tables & sample data)
+├── README.md
+```
+
+---
+
