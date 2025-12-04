@@ -1,0 +1,88 @@
+CODE SETUP & RUN GUIDE (EN)
+HƯỚNG DẪN TẢI & CHẠY CODE (VI)
+
+================================================
+1. DOWNLOAD SOURCE | TẢI SOURCE
+================================================
+
+🇻🇳
+Clone từ GitHub:
+```
+git clone https://github.com/<username>/<repo-name>.git
+cd <repo-name>
+```
+
+🇺🇸
+Clone from GitHub:
+```
+git clone https://github.com/<username>/<repo-name>.git
+cd <repo-name>
+```
+
+Hoặc / Or:
+- GitHub → Code → Download ZIP
+
+================================================
+2. BACKEND – SPRING BOOT
+================================================
+
+Yêu cầu / Requirements:
+- JDK 17+
+- Maven
+
+Cấu hình DB / Configure DB:
+```
+backend/src/main/java/Database/Database.java
+```
+
+Chỉnh lại:
+```
+jdbc:mysql://localhost:3306/library_db
+root
+your_password
+```
+
+Run backend:
+Windows:
+```
+mvnw.cmd spring-boot:run
+```
+
+Mac/Linux:
+```
+./mvnw spring-boot:run
+```
+
+Backend URL:
+http://localhost:8080
+
+================================================
+3. FRONTEND – REACT
+================================================
+
+```
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend URL:
+http://localhost:5173
+
+================================================
+4. RUN ORDER | THỨ TỰ CHẠY
+================================================
+1. MySQL
+2. Backend
+3. Frontend
+
+================================================
+5. COMMON ERRORS | LỖI THƯỜNG GẶP
+================================================
+
+- Failed to fetch → Backend chưa chạy
+- Database error → Sai user/password
+- Port error → Cổng đang bị chiếm
+
+✅ Làm đúng theo file này sẽ chạy mượt.  
+✅ Follow this guide to run smoothly.

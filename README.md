@@ -71,53 +71,7 @@ DeTaiCuoiKi/
 
 ## 5. Hướng dẫn cài đặt
 
-### Yêu cầu
-- Java JDK 17+
-- Node.js 18+
-- MySQL 8+
-
----
-
-### Bước 1: Tạo Database
-
-```sql
-CREATE DATABASE library_db;
-USE library_db;
-```
-
-Tạo các bảng `books`, `readers`, `loans` theo file SQL trong project.
-
----
-
-### Bước 2: Chạy Backend
-
-Mở terminal tại thư mục gốc project:
-
-```powershell
-.\mvnw.cmd spring-boot:run
-```
-
-Backend chạy tại:
-```
-http://localhost:8080
-```
-
----
-
-### Bước 3: Chạy Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Mở trình duyệt:
-```
-http://localhost:5173
-```
-
----
+#  Đọc **Database.txt** và **Code.txt** để chạy project.  
 
 ## 6. Cách sử dụng
 
@@ -143,23 +97,6 @@ http://localhost:5173
 
 ---
 
-## 8. Mở rộng tương lai
-
-- Đăng nhập & phân quyền
-- Xuất báo cáo
-- Thông báo quá hạn
-- Lịch sử mượn theo người dùng
-
----
-
-## 9. Tác giả
-
-- Sinh viên: ...
-- MSSV: ...
-- Môn học: ...
-- GVHD: ...
-
----
 
 ✅ **Project hoàn chỉnh, dữ liệu đồng bộ giữa Admin – User – Database.**
 
@@ -256,80 +193,7 @@ DeTaiCuoiKi/
 
 ## 5. Installation Guide (English)
 
-### 5.1 Requirements
-
-- Java **JDK 17+**
-- Node.js **18+**
-- MySQL **8+**
-- Maven (or use the included `mvnw` wrapper)
-
-### 5.2 Database Setup
-
-1. Create the database:
-
-```sql
-CREATE DATABASE library_db;
-USE library_db;
-```
-
-2. Create tables `books`, `readers`, `loans` according to the provided SQL script or entity definitions.
-
-3. Configure database connection in Spring Boot (e.g. in `application.properties`):
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/library_db
-spring.datasource.username=root
-spring.datasource.password=your_password
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-
-spring.jpa.hibernate.ddl-auto=none
-```
-
-> Adjust the username, password, and URL according to your environment.
-
-### 5.3 Run Backend
-
-From the **backend** (or project root if `mvnw` is there) directory:
-
-```bash
-# Windows PowerShell
-.\mvnw.cmd spring-boot:run
-
-# macOS / Linux (if wrapper is executable)
-./mvnw spring-boot:run
-```
-
-If successful, you should see something similar to:
-
-```text
-Started LibraryApplication in X.XXX seconds
-Tomcat started on port 8080
-```
-
-Backend base URL:
-
-```text
-http://localhost:8080
-```
-
-### 5.4 Run Frontend
-
-From the `frontend` directory:
-
-```bash
-npm install
-npm run dev
-```
-
-Frontend dev server:
-
-```text
-http://localhost:5173
-```
-
-You can now open the app in your browser.
-
----
+# Read **Database.txt** and **Code.txt** to run the project.
 
 ## 6. Usage
 
@@ -493,72 +357,7 @@ sequenceDiagram
 
 ---
 
-## 8. Future Improvements
-
-- Authentication & Role-based Authorization
-- Email/SMS notifications for overdue books
-- Reports and export to Excel/PDF
-- Better UI for mobile devices
-- Pagination & advanced search
-
----
-
-## 9. Author
-
-- Student: *(fill your name)*  
-- Student ID: *(fill your ID)*  
-- Course: *(fill course name)*  
-- Instructor: *(fill instructor name)*  
-
----
 
 ✅ The project provides a complete, working **full-stack library management system** with synchronized data between **Admin**, **User**, and the **database**, and can be extended easily for real-world use.
 
----
-
-## 📥 Download Source Code (Quick Start)
-
-### Option 1: Clone directly from GitHub (Recommended)
-
-Make sure **Git** is installed on your computer, then run:
-
-```bash
-git clone https://github.com/<your-username>/<your-repo-name>.git
-cd <your-repo-name>
-```
-
-Replace:
-- `<your-username>` with your GitHub username
-- `<your-repo-name>` with the repository name
-
-This will download **both frontend & backend** with full configuration.
-
----
-
-### Option 2: Download ZIP (No Git required)
-
-1. Open the GitHub repository
-2. Click **Code → Download ZIP**
-3. Extract the ZIP file
-4. Open the extracted folder in **VS Code / IntelliJ**
-
----
-
-## 📦 Project Structure Overview
-
-```text
-DeTaiCuoiKi/
-├── backend/              # Java Spring Boot backend
-│   ├── src/main/java/
-│   ├── pom.xml
-│   └── mvnw, mvnw.cmd
-├── frontend/             # React + TypeScript frontend
-│   ├── src/
-│   ├── package.json
-│   └── vite.config.ts
-├── database/             # MySQL scripts (tables & sample data)
-├── README.md
-```
-
----
 

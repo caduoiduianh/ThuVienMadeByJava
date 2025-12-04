@@ -1,0 +1,94 @@
+DATABASE SETUP GUIDE (EN)
+HƯỚNG DẪN CÀI ĐẶT DATABASE (VI)
+
+================================================
+1. INSTALL MYSQL | CÀI ĐẶT MYSQL
+================================================
+
+🇻🇳
+Tải MySQL Community Server:
+https://dev.mysql.com/downloads/mysql/
+
+- Thiết lập mật khẩu cho tài khoản root
+- Port mặc định: 3306
+
+🇺🇸
+Download MySQL Community Server:
+https://dev.mysql.com/downloads/mysql/
+
+- Set root password
+- Default port: 3306
+
+Verify / Kiểm tra:
+```
+mysql --version
+```
+
+================================================
+2. CREATE DATABASE | TẠO DATABASE
+================================================
+
+Login / Đăng nhập:
+```
+mysql -u root -p
+```
+
+Create / Tạo database:
+```
+CREATE DATABASE library_db CHARACTER SET utf8mb4;
+USE library_db;
+```
+
+================================================
+3. CREATE TABLES | TẠO BẢNG
+================================================
+
+Books table:
+```
+CREATE TABLE books (
+    id VARCHAR(20) PRIMARY KEY,
+    title VARCHAR(255),
+    author VARCHAR(255),
+    category VARCHAR(100),
+    isbn VARCHAR(50),
+    total_copies INT,
+    available_copies INT
+);
+```
+
+Readers table:
+```
+CREATE TABLE readers (
+    id VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(255),
+    phone VARCHAR(50),
+    max_loans INT
+);
+```
+
+Loans table:
+```
+CREATE TABLE loans (
+    id VARCHAR(30) PRIMARY KEY,
+    book_id VARCHAR(20),
+    reader_id VARCHAR(20),
+    borrow_date DATE,
+    due_date DATE,
+    return_date DATE,
+    FOREIGN KEY (book_id) REFERENCES books(id),
+    FOREIGN KEY (reader_id) REFERENCES readers(id)
+);
+```
+
+================================================
+4. SAMPLE DATA | DỮ LIỆU MẪU
+================================================
+
+```
+INSERT INTO books VALUES
+('B001','Clean Code','Robert Martin','Programming','9780132350884',5,5),
+('B002','Design Patterns','GoF','Programming','9780201633610',3,3);
+```
+
+✅ Database ready.  
+✅ Database đã sẵn sàng.
