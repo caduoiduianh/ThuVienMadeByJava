@@ -6,10 +6,13 @@ import DataAccessObject.ReaderObject;
 import ModelLibrary.Book;
 import ModelLibrary.Loan;
 import ModelLibrary.Reader;
+import Web.dto.RecentActivity; // Cần import DTO này
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class LibraryService {
@@ -251,5 +254,64 @@ public class LibraryService {
         Book book = resolveBookFromQuery(bookQuery);
         String loanId = genLoanId();
         return borrowLoan(loanId, book.getId(), reader.getId());
+    }
+
+    // =============================================================
+    // CẬP NHẬT: Lấy Dashboard Stats + 5 Hoạt động gần đây (Recent Activity)
+    // =============================================================
+    public Web.dto.DashboardStats getDashboardStats() throws SQLException {
+        // 1. Lấy toàn bộ dữ liệu từ Database
+        List<Book> books = bookDAO.findAll();
+        List<Reader> readers = readerDAO.findAll();
+        List<Loan> loans = loanDAO.findAll();
+
+        // 2. Tính tổng số lượng
+        int totalBooks = books.size();     // Tổng đầu sách
+        int totalMembers = readers.size(); // Tổng thành viên
+
+        // 3. Tính toán trạng thái mượn trả
+        int borrowingCount = 0;
+        int overdueCount = 0;
+
+        for (Loan l : loans) {
+            // Chỉ xét những phiếu Mượn chưa trả (ReturnDate là null)
+            if (l.getReturnDate() == null) {
+                borrowingCount++;
+
+                // [OOP LOGIC] Gọi phương thức của đối tượng Loan
+                if (l.isOverdue()) {
+                    overdueCount++;
+                }
+            }
+        }
+
+        // 4. XỬ LÝ DANH SÁCH HOẠT ĐỘNG GẦN ĐÂY (Top 5)
+        // Sắp xếp danh sách loans theo ngày mượn (mới nhất lên đầu)
+        loans.sort(Comparator.comparing(Loan::getLoanDate).reversed());
+
+        // Lấy 5 phần tử đầu tiên (hoặc ít hơn nếu danh sách chưa đủ 5)
+        List<Loan> top5 = loans.subList(0, Math.min(loans.size(), 5));
+        
+        List<RecentActivity> activities = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        for (Loan l : top5) {
+            // Vì bảng Loan chỉ lưu ID, cần query lấy Tên Sách và Tên Độc Giả
+            Book b = bookDAO.findById(l.getBookId());
+            Reader r = readerDAO.findById(l.getReaderId());
+
+            String bookTitle = (b != null) ? b.getTitle() : "Sách đã xóa";
+            String memberName = (r != null) ? r.getName() : "Khách vãng lai";
+            
+            // Nếu đã có ngày trả -> Action là "Đã trả", ngược lại là "Mượn sách"
+            String action = (l.getReturnDate() != null) ? "Đã trả" : "Mượn sách";
+            String dateStr = l.getLoanDate().format(formatter);
+
+            // Thêm vào list hoạt động
+            activities.add(new RecentActivity(l.getId(), memberName, bookTitle, action, dateStr));
+        }
+
+        // 5. Đóng gói kết quả vào Object DTO mới (bao gồm cả list activities)
+        return new Web.dto.DashboardStats(totalBooks, totalMembers, borrowingCount, overdueCount, activities);
     }
 }

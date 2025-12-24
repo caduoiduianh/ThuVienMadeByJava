@@ -82,4 +82,10 @@ public class LibraryRestController {
     public boolean returnBook(@RequestBody ReturnRequest req) throws SQLException {
         return libraryService.returnBook(req.getLoanId());
     }
+    // =======CALL API======
+    @GetMapping("/dashboard/stats")
+    public Web.dto.DashboardStats getStats() throws SQLException {
+        // Gọi xuống Service để lấy số liệu đã tính toán bằng OOP
+        return libraryService.getDashboardStats();
+    }
 }
